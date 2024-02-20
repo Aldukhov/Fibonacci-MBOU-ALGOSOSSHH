@@ -1,0 +1,33 @@
+.form {
+    align-items: center;
+    justify-content: space-evenly;
+
+}
+
+.buttons {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mr {
+    margin-right: 10px;
+}
+
+.column {
+    flex: 1;
+    padding: 10px;
+    margin-bottom: 5px;
+}
+
+.container {
+    margin-top: 50px;
+    display: flex;
+    justify-content: center;
+  align-items: flex-end;
+}
+
+.containerBlock {
+    display:block;
+    margin-right: 5px;
+}

@@ -1,0 +1,17 @@
+.inputBlock {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+.inputMargin {
+    margin-right: 10px;
+    max-width: 377px;
+    width:100%;
+}
+
+.circleBlock {
+    margin-top: 50px;
+    justify-content: center;
+    display: flex;
+}
