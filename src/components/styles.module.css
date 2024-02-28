@@ -5,13 +5,22 @@
 }
 
 .inputMargin {
-    margin-right: 10px;
+    margin-right: 12px;
     max-width: 377px;
     width:100%;
 }
 
 .circleBlock {
-    margin-top: 50px;
+    margin-top: 120px;
     justify-content: center;
     display: flex;
+}
+
+.btn {
+ max-width: 178px;
+ width: 100%;
+}
+
+.circle {
+    margin-right: 16px;
 }

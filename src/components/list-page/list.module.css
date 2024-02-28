@@ -1,0 +1,51 @@
+.form {
+    align-items: flex-start;
+    justify-content: space-evenly;
+    display: flex;
+    margin-bottom: 20px;
+}
+
+.topBtn {
+    max-width: 175px;
+    width:100%;
+    margin-left:12px;
+}
+
+.bottomBtn {
+    max-width: 362px;
+    width:100%;
+    margin-left:12px;
+}
+
+.buttons {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+}
+
+.mr {
+    margin-right: 10px;
+}
+
+.column {
+    flex: 1;
+    padding: 10px;
+    margin-bottom: 5px;
+}
+
+.container {
+    margin-top: 50px;
+    display: flex;
+    justify-content: center;
+  align-items: flex-end;
+}
+
+.containerBlock {
+    display:block;
+    margin-right: 5px;
+}
+
+.input {
+    max-width: 204px;
+    width:100%;
+}

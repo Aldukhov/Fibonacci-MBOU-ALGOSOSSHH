@@ -18,7 +18,7 @@ export const StringComponent: React.FC = () => {
 
   const handleClick = async () => {
     let newCircles = inputValue.split('').map((element, index) => (
-      <Circle key={index} state={ElementStates.Default} letter={element} />
+      <Circle key={index} extraClass={`${styles.circle}`}  state={ElementStates.Default} letter={element} />
     ));
 
     setCircles(newCircles);
@@ -36,7 +36,7 @@ export const StringComponent: React.FC = () => {
         const updatedCircles = newCircles.map((circle, index) => {
           if (index === l || index === r) {
             // Изменяем состояние элементов l и r на Changing до обмена местами
-            return <Circle key={index} state={ElementStates.Changing} letter={circle.props.letter} />;
+            return <Circle key={index} extraClass={`${styles.circle}`} state={ElementStates.Changing} letter={circle.props.letter} />;
           }
           return circle;
         });
@@ -55,7 +55,7 @@ export const StringComponent: React.FC = () => {
         const modifiedCircles = updatedCircles.map((circle, index) => {
           if (index === l || index === r) {
             // Изменяем состояние элементов l и r на Modified после обмена местами
-            return <Circle key={index} state={ElementStates.Modified} letter={circle.props.letter} />;
+            return <Circle extraClass={`${styles.circle}`}  key={index} state={ElementStates.Modified} letter={circle.props.letter} />;
           }
           return circle;
         });
@@ -91,6 +91,7 @@ export const StringComponent: React.FC = () => {
           onClick={() => {
             handleClick();
           }}
+          extraClass={styles.btn}
         />
       </form>
 

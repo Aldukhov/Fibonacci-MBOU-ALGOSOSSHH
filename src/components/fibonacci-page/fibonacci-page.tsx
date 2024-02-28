@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import styles from "../styles.module.css"
+import style from './fibonacci.module.css'
 import { SolutionLayout } from "../ui/solution-layout/solution-layout";
 import { Input } from "../ui/input/input";
 import { Button } from "../ui/button/button";
@@ -40,7 +41,7 @@ export const FibonacciPage: React.FC = () => {
     if (inputValue) {
       const fibSequence = fibArray(inputValue);
       const circleElements = fibSequence.map((element, index) => (
-        <Circle key={index} state={ElementStates.Default} letter={`${element}`} index={index} />
+        <Circle extraClass={`${styles.circle}`} key={index} state={ElementStates.Default} letter={`${element}`} index={index} />
       ));
 
       setCircles(circleElements);
@@ -71,6 +72,7 @@ export const FibonacciPage: React.FC = () => {
         <Button
           text={"Развернуть"}
           type={"button"}
+          extraClass={styles.btn}
           disabled={inputValue === 0}
           isLoader={isLoading}
           onClick={() => {
@@ -79,7 +81,7 @@ export const FibonacciPage: React.FC = () => {
         />
       </form>
 
-      {<div className={styles.circleBlock}>
+      {<div>
         {circles.length > 0 && (
           <div className={styles.circleBlock}>
             {circles}

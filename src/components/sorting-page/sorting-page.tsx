@@ -114,7 +114,7 @@ export const SortingPage: React.FC = () => {
           <Button
             text={"по возрастанию"}
             type={"button"}
-            extraClass={style.mr}
+            extraClass={classNames(style.buttonM,style.btns)}
             onClick={ascendingClick}
             isLoader={!ascending && isLoading}
             disabled={disabledButtons || ascending}
@@ -125,6 +125,7 @@ export const SortingPage: React.FC = () => {
             onClick={ascendingClick}
             isLoader={ascending && isLoading}
             disabled={disabledButtons || !ascending}
+            extraClass={classNames(style.btns)}
           />
         </div>
         <Button
@@ -132,6 +133,7 @@ export const SortingPage: React.FC = () => {
           type={"button"}
           onClick={newArrClick}
           disabled={disabledButtons}
+          extraClass={classNames(style.btns)}
         />
       </form>
       <div className={style.container}>
