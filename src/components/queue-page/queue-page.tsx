@@ -7,55 +7,12 @@ import { Input } from "../ui/input/input";
 import { Circle } from "../ui/circle/circle";
 import { ElementStates } from "../../types/element-states";
 import classNames from 'classnames';
-
-interface IQueue<T> {
-  enqueue: (item: T) => void;
-  dequeue: () => void;
-  container: (T | null)[];
-  head: number;
-  tail: number;
-}
-
-
-class Queue<T> implements IQueue<T> {
-  public container: (T | null)[] = [];
-  public head = 0;
-  public tail = 0;
-  private readonly size: number = 0;
-  private length: number = 0;
-
-  constructor(size: number) {
-    this.size = size;
-    this.container = Array(size);
-  }
-
-  enqueue = (item: T) => {
-    if (this.length >= this.size) {
-      throw new Error("Maximum length exceeded");
-    }
-    this.container[this.tail % this.size] = item; // Добавляем элемент в конец очереди, используя указатель tail
-    this.tail = (this.tail + 1) % (this.size); // Обновляем указатель tail с помощью операции взятия остатка от деления
-    this.length++;
-  };
-
-  dequeue = () => {
-    if (this.isEmpty()) {
-      throw new Error("No elements in the queue");
-    }
-
-    this.container[this.head % this.size] = null; // Удаляем элемент из начала очереди
-    this.head = (this.head + 1) % this.size; // Обновляем указатель head
-    this.length--;
-
-  };
-
-  isEmpty = () => this.length === 0;
-}
-
+import { IQueue, Queue } from "./utils";
 
 export const QueuePage: React.FC = () => {
 
-
+  const [disableDelete, setDisableDelete] = useState<boolean>(false);
+  const [disableClean, setDisableClean] = useState<boolean>(true);
   const [circles, setCircles] = useState<JSX.Element[]>([]);
   const [inputValue, setInputValue] = useState<string>('');
   const formRef = useRef<HTMLFormElement>(null);
@@ -89,30 +46,47 @@ export const QueuePage: React.FC = () => {
   }, []);
 
 
-  const addCircle = () => {
+  const updateCircle = (index: number, head: string, tail: string, letter: string, state: ElementStates | undefined): JSX.Element => {
+    return (
+      <Circle
+        key={index}
+        state={state}
+        letter={letter}
+        index={index}
+        head={head}
+        tail={tail}
+        extraClass={`${styles.circle}`}
+      />
+    );
+  };
 
-    if (inputValue !== '' && queue !== null) {
+  const addCircle = () => {
+    if (inputValue !== '' && queue !== null && !isNaN(Number(inputValue))) {
       queue.enqueue(Number(inputValue));
 
       setCircles(prevState => {
-        const newArr: JSX.Element[] = [...prevState];
-        let arr: JSX.Element[] = newArr.map((element, index) => {
-
-          if (queue.container[index] !== undefined) {
-            if (queue.container[index] === null) {
-              return React.cloneElement(element, { head: '', tail: '', letter: `` })
+        const newArr = [...prevState];
+        const arr = newArr.map((element, index) => {
+          const queueValue = queue.container[index];
+          let head = '', tail = '', letter = '';
+          let state = ElementStates.Default;
+          if (queueValue !== undefined) {
+            if (queueValue !== null) {
+              letter = `${queueValue}`;
+              if (queue.head === index) head = 'top';
+              if (queue.tail - 1 === index) tail = 'tail';
+              if (queue.length - 1 === index) { state = ElementStates.Changing; }
             }
-            else
-              if (queue.head === index && queue.tail - 1 === index) {
-                return React.cloneElement(element, { head: 'top', tail: 'tail', letter: `${queue.container[index]}` })
-              } else if (queue.tail - 1 === index) {
-                return React.cloneElement(element, { head: '', tail: 'tail', letter: `${queue.container[index]}` })
-              } else if (queue.head === index) {
-                return React.cloneElement(element, { head: 'top', tail: '', letter: `${queue.container[index]}` })
-              }
-              else {
-                return React.cloneElement(element, { head: '', tail: '', letter: `${queue.container[index]}` })
-              }
+            if (state === ElementStates.Changing) {
+              setTimeout(() => {
+                setCircles(prevState => {
+                  const updatedArr = [...prevState];
+                  updatedArr[index] = updateCircle(index, head, tail, letter, ElementStates.Default);
+                  return updatedArr;
+                });
+              }, 500);
+            }
+            return updateCircle(index, head, tail, letter, state);
           }
           return element;
         });
@@ -122,95 +96,124 @@ export const QueuePage: React.FC = () => {
       if (formRef.current) {
         formRef.current.reset();
       }
-    };
+    }
 
-  }
-    const deleteCircle = () => {
+    setInputValue('');
+    setDisableClean(false);
+    if (formRef.current) {
+      formRef.current.reset();
+    }
+  };
 
-      if (queue !== null) {
-        queue.dequeue();
 
+  const deleteCircle = () => {
+    setDisableDelete(true);
+    if (queue !== null) {
+      let headIndex = queue.head;
+      queue.dequeue();
+
+      setCircles(prevState => {
+        const newArr = [...prevState];
+        return newArr.map((element, index) => {
+
+          if (headIndex === index) {
+            return React.cloneElement(element, { state: ElementStates.Changing });
+          }
+          return element;
+        });
+      });
+      setTimeout(() => {
         setCircles(prevState => {
-          const newArr: JSX.Element[] = [...prevState];
-          let arr: JSX.Element[] = newArr.map((element, index) => {
-
-            if (queue.container[index] !== undefined) {
-              if (queue.container[index] === null) {
-                return React.cloneElement(element, { head: '', tail: '', letter: `` })
+          const newArr = [...prevState];
+          const arr = newArr.map((element, index) => {
+            const queueValue = queue.container[index];
+            let head = '', tail = '', letter = '';
+            if (queueValue !== undefined) {
+              if (queueValue !== null) {
+                letter = `${queueValue}`;
+                if (queue.head === index) head = 'top';
+                if (queue.tail - 1 === index) tail = 'tail';
               }
-              else if (queue.head === index && queue.tail - 1 === index) {
-                return React.cloneElement(element, { head: 'top', tail: 'tail', letter: `${queue.container[index]}` })
-              } else if (queue.tail - 1 === index) {
-                return React.cloneElement(element, { head: '', tail: 'tail', letter: `${queue.container[index]}` })
-              } else if (queue.head === index) {
-                return React.cloneElement(element, { head: 'top', tail: '', letter: `${queue.container[index]}` })
+              if (headIndex === index) {
+                return updateCircle(index, head, tail, letter, ElementStates.Default);
               }
-              else {
-                return React.cloneElement(element, { head: '', tail: '', letter: `${queue.container[index]}` })
-              }
+              return updateCircle(index, head, tail, letter, ElementStates.Default);
             }
             return element;
           });
+
+
+
           return arr;
         });
-      }
+        setDisableDelete(false);
+      }, 500);
+
+    } else {
+      setDisableDelete(false);
+    };
+
+  }
+
+  const cleanCircle = () => {
+    emptyCircle();
+    setQueue(new Queue<number>(8));
+    if (formRef.current) {
+      formRef.current.reset();
     }
 
-    const cleanCircle = () => {
-      emptyCircle();
-      setQueue(new Queue<number>(8));
-      if (formRef.current) {
-        formRef.current.reset();
-      }
-    }
+    setDisableClean(true);
+  }
 
-    return (
-      <SolutionLayout title="Очередь">
-        <form ref={formRef} className={classNames(styles.inputBlock, style.form)}>
+  return (
+    <SolutionLayout title="Очередь">
+      <form ref={formRef} className={classNames(styles.inputBlock, style.form)}>
 
-          <div className={style.buttons}>
-            <Input
-              extraClass={style.input}
-              onChange={handleInputChange}
-              maxLength={4}
-              isLimitText={true}
-            />
+        <div className={style.buttons}>
+          <Input
+            extraClass={style.input}
+            onChange={handleInputChange}
+            maxLength={4}
+            isLimitText={true}
+          />
 
-
-            <Button
-              text={"Добавить"}
-              type={"button"}
-              extraClass={style.mr}
-              onClick={() => {
-                addCircle();
-              }}
-            />
-
-            <Button
-              text={"Удалить"}
-              type={"button"}
-              onClick={() => {
-                deleteCircle();
-              }}
-            />
-          </div>
 
           <Button
-            text={"Очистить"}
+            text={"Добавить"}
             type={"button"}
-            extraClass={style.ml}
+            extraClass={style.mr}
             onClick={() => {
-              cleanCircle();
+              addCircle();
             }}
           />
-        </form>
 
-        {circles.length > 0 && (
-          <div className={style.circleBlock}>
-            {circles}
-          </div>
-        )}
-      </SolutionLayout>
-    );
-  }
+          <Button
+            text={"Удалить"}
+            type={"button"}
+            disabled={disableDelete}
+            onClick={() => {
+              deleteCircle();
+            }}
+          />
+        </div>
+
+        <Button
+          text={"Очистить"}
+          type={"button"}
+          extraClass={style.ml}
+          disabled={disableClean}
+          onClick={() => {
+            cleanCircle();
+          }}
+        />
+      </form>
+
+      {circles.length > 0 && (
+        <div className={style.circleBlock}>
+          {circles}
+        </div>
+      )}
+    </SolutionLayout>
+  );
+}
 

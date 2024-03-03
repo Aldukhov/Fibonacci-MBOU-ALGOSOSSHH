@@ -14,30 +14,7 @@ export const SortingPage: React.FC = () => {
   const [disabledButtons, setDisabledButtons] = useState<boolean>(false);
   const [columnColors, setColumnColors] = useState<string[]>([]);
 
-
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSelectedValue(event.target.value);
-  };
-
-  const ascendingClick = () => {
-    setAscending(!ascending);
-    setIsLoading(true);
-    setDisabledButtons(true);
-
-    if (arr.length > 0) {
-      
-        if (selectedValue === 'bubble') {
-          bubbleSort();
-        } else if (selectedValue === 'selection') {
-          selectionSort();
-        }
-    }
-      setIsLoading(false);
-      setDisabledButtons(false);
-      
-  }
-
-  const newArrClick = () => {
+  const randomArr = (): number[] => {
     const length = Math.floor(Math.random() * (17 - 3 + 1)) + 3;
     const randomArray: number[] = [];
 
@@ -46,59 +23,110 @@ export const SortingPage: React.FC = () => {
       randomArray.push(randomNumber);
     }
 
-    setArr(randomArray);
-    setColumnColors(Array.from({ length }, () => '#0032FF'));
+    return randomArray;
   }
 
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    event.preventDefault();
+    setSelectedValue(event.target.value);
+  };
+
+  const ascendingClick = () => {
+    setAscending(!ascending);
+    setDisabledButtons(true);
+
+    if (arr.length > 0) {
+      setIsLoading(true);
+      if (selectedValue === 'bubble') {
+        bubbleSort();
+      } else if (selectedValue === 'selection') {
+        selectionSort();
+      }
+    }
+    setDisabledButtons(false);
+
+  }
+
+  const newArrClick = () => {
+    let randomArray: number[] = randomArr();
+    setArr(randomArray);
+    setColumnColors(new Array(randomArray.length).fill('#0032FF'));
+  }
+
+  const delay = (ms: number): Promise<void> => {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  };
+
   const bubbleSort = async (): Promise<void> => {
-    let sortedArr = [...arr];
-    let sortedColors = [...columnColors];
-    
-    for (let i = 0; i < sortedArr.length - 1; i++) {
-      
-      for (let j = 0; j < sortedArr.length - i - 1; j++) {
-        sortedColors[j] = '#D252E1';
-        sortedColors[j + 1] = '#D252E1';
-        setColumnColors([...sortedColors]);
+    if (arr && columnColors) {
+      let sortedArr = [...arr];
+      let sortedColors = [...columnColors];
 
-        if (!ascending ? sortedArr[j] > sortedArr[j + 1] : sortedArr[j] < sortedArr[j + 1]) {
-          const temp = sortedArr[j];
-          sortedArr[j] = sortedArr[j + 1];
-          sortedArr[j + 1] = temp;
+      for (let i = 0; i < sortedArr.length - 1; i++) {
 
-          setArr([...sortedArr]);
-          sortedColors[j] = '#7FE051';
-          sortedColors[j + 1] = '#7FE051';
+        for (let j = 0; j < sortedArr.length - i - 1; j++) {
+          sortedColors[j] = '#D252E1';
+          sortedColors[j + 1] = '#D252E1';
           setColumnColors([...sortedColors]);
+          await delay(500);
 
+          if (!ascending ? sortedArr[j] > sortedArr[j + 1] : sortedArr[j] < sortedArr[j + 1]) {
+            const temp = sortedArr[j];
+            sortedArr[j] = sortedArr[j + 1];
+            sortedArr[j + 1] = temp;
+
+            setArr([...sortedArr]);
+            sortedColors[j] = '#7FE051';
+            sortedColors[j + 1] = '#7FE051';
+            setColumnColors([...sortedColors]);
+            await delay(500);
+
+          } else {
+
+            sortedColors[j] = '#7FE051';
+            sortedColors[j + 1] = '#7FE051';
+            setColumnColors([...sortedColors]);
+            await delay(500);
+          }
         }
       }
+      setIsLoading(false);
     }
   }
 
-  const selectionSort = (): void => {
-    let sortedArr = [...arr];
-    let sortedColors = [...columnColors];
+  const selectionSort = async(): Promise<void> => {
+    if (arr && columnColors) {
+      let sortedArr = [...arr];
+      let sortedColors = [...columnColors];
 
-    for (let i = 0; i < sortedArr.length - 1; i++) {
-      let minIndex = i;
+      for (let i = 0; i < sortedArr.length - 1; i++) {
+        let minIndex = i;
 
-      for (let j = i + 1; j < sortedArr.length; j++) {
-        sortedColors[j] = '#D252E1'; 
-        setColumnColors([...sortedColors]);
-
-        if (!ascending ? sortedArr[j] < sortedArr[minIndex] : sortedArr[j] > sortedArr[minIndex]) {
-          minIndex = j;
+        for (let j = i + 1; j < sortedArr.length; j++) {
+          sortedColors[j] = '#D252E1';
+          setColumnColors([...sortedColors]);
+          await delay(500);
+          if (!ascending ? sortedArr[j] < sortedArr[minIndex] : sortedArr[j] > sortedArr[minIndex]) {
+            minIndex = j;
+          }
         }
+
+        const temp = sortedArr[i];
+        sortedArr[i] = sortedArr[minIndex];
+        sortedArr[minIndex] = temp;
+        setArr([...sortedArr]);
+        sortedColors[i] = '#7FE051';
+        sortedColors[minIndex] = '#7FE051';
+        setColumnColors([...sortedColors]);
       }
 
-      const temp = sortedArr[i];
-      sortedArr[i] = sortedArr[minIndex];
-      sortedArr[minIndex] = temp;
-      setArr([...sortedArr]);
-      sortedColors[i] = '#7FE051';
-      sortedColors[minIndex] = '#7FE051';
-      setColumnColors([...sortedColors]);
+      if (sortedColors[sortedColors.length - 1] !== '#7FE051') {
+        sortedColors[sortedColors.length - 1] = '#7FE051';
+        setColumnColors([...sortedColors]);
+        await delay(500);
+      }
+
+      setIsLoading(false);
     }
 
   }
@@ -114,7 +142,7 @@ export const SortingPage: React.FC = () => {
           <Button
             text={"по возрастанию"}
             type={"button"}
-            extraClass={classNames(style.buttonM,style.btns)}
+            extraClass={classNames(style.buttonM, style.btns)}
             onClick={ascendingClick}
             isLoader={!ascending && isLoading}
             disabled={disabledButtons || ascending}
@@ -132,10 +160,11 @@ export const SortingPage: React.FC = () => {
           text={"Новый массив"}
           type={"button"}
           onClick={newArrClick}
-          disabled={disabledButtons}
+          isLoader={isLoading}
           extraClass={classNames(style.btns)}
         />
       </form>
+      
       <div className={style.container}>
         {arr.map((value, index) => (
           <div className={style.containerBlock} key={index}>
@@ -147,6 +176,7 @@ export const SortingPage: React.FC = () => {
           </div>
         ))}
       </div>
+      
     </SolutionLayout>
   );
 };

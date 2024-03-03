@@ -1,408 +1,509 @@
-import React, { useState, useRef, useEffect } from "react";
-import { SolutionLayout } from "../ui/solution-layout/solution-layout";
-import styles from '../styles.module.css'
-import style from './list.module.css'
-import { Button } from "../ui/button/button";
-import { Input } from "../ui/input/input";
-import { Circle } from "../ui/circle/circle";
+import React, { useState } from "react";
 import { ElementStates } from "../../types/element-states";
-import classNames from 'classnames';
+import { Button } from "../ui/button/button";
+import { Circle } from "../ui/circle/circle";
+import { ArrowIcon } from "../ui/icons/arrow-icon";
+import { Input } from "../ui/input/input";
+import { SolutionLayout } from "../ui/solution-layout/solution-layout";
+import { LinkedList } from "./utils";
+import styles from './list.module.css'
 
-export class Node<T> {
-  value: T
-  next: Node<T> | null
-  constructor(value: T, next?: Node<T> | null) {
-    this.value = value;
-    this.next = (next === undefined ? null : next);
-  }
+
+
+interface IArr {
+  smallCircle: ISmallCircle | null
+  state: ElementStates,
+  value: string,
 }
 
-interface ILinkedList<T> {
-  append: (element: T) => void;
-  insertAt: (element: T, position: number) => void;
-  getSize: () => number;
-  print: () => void;
-  head: Node<T> | null;
-  deleteAt: (position: number) => void;
+interface ISmallCircle {
+  state: ElementStates,
+  value: string,
+  activeClass: 'smallCircle' | 'bigCircle';
 }
 
-class LinkedList<T> implements ILinkedList<T> {
-  public head: Node<T> | null;
-  private size: number;
-  constructor() {
-    this.head = null;
-    this.size = 0;
+const arr = Array.from({ length: 4 }, () => Math.floor(Math.random() * 10).toString());
+
+const list = new LinkedList<string | number>(arr)
+
+const initialArr = arr.map((item) => {
+  return {
+    state: ElementStates.Default,
+    smallCircle: null,
+    value: item,
   }
+})
 
-  insertAt(element: T, index: number) {
-    if (index < 0 || index > this.size) {
-      console.log('Enter a valid index');
-      return;
-    } else {
-      const node = new Node(element);
-
-      // добавить элемент в начало списка
-      if (index === 0) {
-        node.next = this.head;
-        this.head = node; // Обновляем head, чтобы указывал на новый узел
-      } else {
-        let curr = this.head;
-        let prev = null;
-        let currIndex = 0;
-
-        // перебрать элементы в списке до нужной позиции
-        while (currIndex < index) {
-          prev = curr;
-          if (curr) {
-            curr = curr.next;
-            currIndex++;
-          }
-        }
-
-        // добавить элемент
-        node.next = curr;
-        if (prev) {
-          prev.next = node;
-        } else {
-          this.head = node; // Если prev === null, значит элемент должен быть вставлен в начало списка
-        }
-      }
-
-      this.size++;
-    }
-  }
-
-  deleteAt(position: number) {
-
-    if (position < 0 || position >= this.size) {
-      console.log('Enter a valid position');
-      return;
-    }
-
-    let curr = this.head;
-    let prev = null;
-    let index = 0;
-
-    if (curr) {
-
-      // Доходим до узла, который нужно удалить
-      while (index < position) {
-        if (curr) {
-          prev = curr;
-          curr = curr.next;
-          index++;
-        }
-      }
-
-      // Удаляем узел из списка
-      if (prev === null && curr) {
-        // Если удаляется первый узел списка
-        this.head = curr.next;
-      } else if (curr && prev) {
-        prev.next = curr.next;
-      }
-
-      this.size--;
-    }
-  }
-
-
-  append(element: T) {
-    const node = new Node(element);
-    let current;
-
-    if (this.head === null) {
-      this.head = node;
-    } else {
-      current = this.head;
-      while (current.next) {
-        current = current.next;
-      }
-
-      current.next = node;
-    }
-    this.size++;
-  }
-
-  getSize() {
-    return this.size;
-  }
-
-  print() {
-    let curr = this.head;
-    let res = '';
-    while (curr) {
-      res += `${curr.value} `;
-      curr = curr.next;
-    }
-    console.log(res);
-  }
-}
-
+const setDelay = (timer: number) => new Promise<void>(
+  resolve => setTimeout(resolve, timer)
+);
 
 export const ListPage: React.FC = () => {
 
-  const [circles, setCircles] = useState<JSX.Element[]>([]);
   const [inputValue, setInputValue] = useState<string>('');
-  const [inputIndex, setInputIndex] = useState<string>('');
-  const formRef = useRef<HTMLFormElement>(null);
-  const secondFormRef = useRef<HTMLFormElement>(null);
-  const [list, setList] = useState<LinkedList<number> | null>(null);
+  const [inputIndex, setInputIndex] = useState<number>(0);
+  const [addHead, setAddHead] = useState<boolean>(false);
+  const [addTail, setAddTail] = useState<boolean>(false);
+  const [addByIndex, setAddByIndex] = useState<boolean>(false);
+  const [removeHead, setRemoveHead] = useState<boolean>(false);
+  const [removeTail, setRemoveTail] = useState<boolean>(false);
+  const [removeByIndex, setRemoveByIndex] = useState<boolean>(false);
 
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    setInputValue(event.target.value);
-  };
+  const [formDisabled, setFormDisabled] = useState<boolean>(false);
 
-  const handleInputCIndex = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    setInputIndex(event.target.value);
-  };
+  const [array, setArray] = useState<IArr[]>(initialArr);
+
+  const onChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
+    const inputValue: string = e.currentTarget.value;
+    setInputValue(inputValue);
+  }
+
+  const onChangeIndex = (e: React.ChangeEvent<HTMLInputElement>): void => {
+    const inputValue: string = e.currentTarget.value;
+    const inputIndex: number = parseInt(inputValue, 10);
+    setInputIndex(inputIndex);
+  }
 
 
-  const emptyCircle = (): void => {
+  const onAddHead = async () => {
+    try {
+      setFormDisabled(true);
+      setAddHead(true);
 
-    setCircles([]);
-    if (list) {
 
-      for (let i = 0; i < 4; i++) {
-        const randomValue = Math.floor(Math.random() * 100);
+      list.prepend(inputValue);
 
-        list.append(randomValue);
+      if (array.length > 0) {
 
-        setCircles(prevState => {
-          const newCircle = (
-            <Circle
-              key={(Math.random() * randomValue) / Math.random()}
-              state={ElementStates.Default}
-              letter={`${randomValue}`}
-              index={i}
-              head={i === 0 ? "head" : ""}
-              tail={i === 3 ? "tail" : ""}
-              extraClass={`${styles.circle}`}
-            />
-          );
-
-          return [...prevState, newCircle];
-        });
-
+        array[0].smallCircle = {
+          state: ElementStates.Changing,
+          value: inputValue,
+          activeClass: 'smallCircle'
+        };
       }
-    }
 
+      setArray([...array]);
+
+
+      await new Promise(resolve => setTimeout(resolve, 500));
+
+
+      array[0] = {
+        ...array[0],
+        smallCircle: null
+      };
+
+
+      array.unshift({
+        ...array[0],
+        state: ElementStates.Modified,
+        value: inputValue
+      });
+
+      setArray([...array]);
+
+      // Имитируем еще одну задержку в 500 миллисекунд
+      await new Promise(resolve => setTimeout(resolve, 500));
+
+      // Устанавливаем состояние элемента в Default
+      array[0] = {
+        ...array[0],
+        state: ElementStates.Default
+      };
+
+      setArray([...array]);
+
+      setAddHead(false);
+      setInputValue('');
+    } catch (error) {
+      console.error('An error occurred:', error);
+    } finally {
+      setFormDisabled(false);
+    }
+  }
+
+
+
+  const onAddTail = async () => {
+    setFormDisabled(true);
+    setAddTail(true);
+
+    list.append(inputValue);
+
+    setArray(prevArray => [
+      ...prevArray.slice(0, prevArray.length - 1),
+      {
+        ...prevArray[prevArray.length - 1],
+        topCircle: {
+          state: ElementStates.Changing,
+          value: inputValue,
+          activeClass: 'topCircle',
+        }
+      }
+    ]);
+
+    await setDelay(500);
+
+    setArray(prevArray => [
+      ...prevArray.slice(0, prevArray.length - 1),
+      {
+        ...prevArray[prevArray.length - 1],
+        topCircle: null
+      }
+    ]);
+
+    setArray(prevArray => [
+      ...prevArray,
+      {
+        state: ElementStates.Modified,
+        value: inputValue,
+        smallCircle: null,
+      }
+    ]);
+
+    await setDelay(500);
+
+    setArray(prevArray => [
+      ...prevArray.slice(0, prevArray.length - 1),
+      {
+        ...prevArray[prevArray.length - 1],
+        state: ElementStates.Default
+      }
+    ]);
+
+    setAddTail(false);
+    setInputValue('');
+    setFormDisabled(false);
   };
 
-  useEffect(() => {
-    setList(new LinkedList<number>());
-  }, []);
-
-  useEffect(() => {
-    if (list) {
-      emptyCircle();
-    }
-  }, [list]);
 
 
-  const resetInputs = (): void => {
+  const onAddValueByIndex = async () => {
+    try {
+      setFormDisabled(true);
+      setAddByIndex(true);
 
-    if (formRef.current) {
-      formRef.current.reset();
+      list.addByIndex(inputValue, inputIndex);
+
+      const updatedArray = [...array];
+
+      for (let i = 0; i <= inputIndex; i++) {
+        updatedArray[i] = {
+          ...updatedArray[i],
+          state: ElementStates.Changing,
+          smallCircle: {
+            state: ElementStates.Changing,
+            value: inputValue,
+            activeClass: "smallCircle"
+          }
+        };
+
+        await setDelay(500);
+        setArray([...updatedArray]);
+
+        if (i > 0) {
+          updatedArray[i - 1] = {
+            ...updatedArray[i - 1],
+            smallCircle: null
+          };
+          setArray([...updatedArray]);
+        }
+      }
+
+      await setDelay(500);
+      updatedArray[inputIndex] = {
+        ...updatedArray[inputIndex],
+        state: ElementStates.Default,
+        smallCircle: null
+      };
+      updatedArray.splice(inputIndex, 0, {
+        state: ElementStates.Modified,
+        value: inputValue,
+        smallCircle: null
+      });
+      setArray([...updatedArray]);
+
+      updatedArray[inputIndex] = {
+        ...updatedArray[inputIndex],
+        state: ElementStates.Default
+      };
+
+      updatedArray.forEach((item, index) => {
+        if (index <= inputIndex) {
+          item.state = ElementStates.Default;
+        }
+      });
+
+      await setDelay(500);
+      setArray([...updatedArray]);
+      setInputIndex(0);
+
+      setAddByIndex(false);
       setInputValue('');
-      setInputIndex('');
-    }
-
-    if (secondFormRef.current) {
-      secondFormRef.current.reset();
-      setInputValue('');
-      setInputIndex('');
+    } catch (error) {
+      console.error('An error occurred:', error);
+    } finally {
+      setFormDisabled(false);
     }
   }
 
-  const makeNewCircle = (): void => {
 
-    const elementsArr = elementsList();
-    const randomValue = Math.floor(Math.random() * 100);
 
-    const newCircles = elementsArr.map((value, index) => (
-      <Circle
-        key={(Math.random() * randomValue) / Math.random()}
-        state={ElementStates.Default}
-        letter={`${value}`}
-        index={index}
-        head={index === 0 ? "head" : ""}
-        tail={index === elementsArr.length - 1 ? "tail" : ""}
-        extraClass={`${styles.circle}`}
-      />
-    ));
+  const onRemoveHead = async () => {
+    setFormDisabled(true);
+    setRemoveHead(true);
 
-    setCircles(newCircles);
-  }
-  const addCircleHead = () => {
+    list.deleteHead();
 
-    if (inputValue !== '' && list !== null) {
-      list.insertAt(Number(inputValue), 0);
-      makeNewCircle();
-    };
+    setArray(prevArray => {
+      const [firstItem, ...rest] = prevArray;
+      if (firstItem) {
+        return [
+          {
+            ...firstItem,
+            value: '',
+            topCircle: {
+              state: ElementStates.Changing,
+              value: firstItem.value,
+              activeClass: "bottomCircle"
+            }
+          },
+          ...rest
+        ];
+      }
+      return prevArray;
+    });
 
-    resetInputs();
-  }
+    await setDelay(500);
 
-  const addCircleTail = () => {
+    setArray(prevArray => {
+      const [, ...rest] = prevArray;
+      return rest;
+    });
 
-    if (inputValue !== '' && list !== null) {
+    await setDelay(500);
 
-      list.append(Number(inputValue))
+    setRemoveHead(false);
+    setFormDisabled(false);
+  };
 
-      makeNewCircle();
-    }
-    resetInputs();
-  }
 
-  const addCircleIndex = () => {
 
-    const iIndex = Number(inputIndex);
-    const iValue = Number(inputValue);
+  const onRemoveTail = async () => {
+    setFormDisabled(true);
+    setRemoveTail(true);
 
-    if (inputValue !== '' && list !== null && (iIndex <= circles.length - 1)) {
+    list.deleteTail();
 
-      list.insertAt(iValue, iIndex);
+    setArray(prevArray => {
+      const newArray = [...prevArray];
+      const lastItem = newArray.pop();
+      if (lastItem) {
+        return [
+          ...newArray,
+          {
+            ...lastItem,
+            value: '',
+            topCircle: {
+              state: ElementStates.Changing,
+              value: lastItem.value,
+              activeClass: "bottomCircle"
+            }
+          }
+        ];
+      }
+      return newArray;
+    });
 
-      makeNewCircle();
-    }
-    resetInputs();
-  }
+    await setDelay(500);
 
-  const deleteCircleHead = () => {
-    if (list !== null) {
-      list.deleteAt(0);
-      makeNewCircle();
-    };
-    resetInputs();
-  }
+    setArray(prevArray => {
+      const newArray = [...prevArray];
+      newArray.pop();
+      return newArray;
+    });
 
-  const deleteCircleTail = () => {
+    await setDelay(500);
 
-    if (list !== null) {
-      list.deleteAt(circles.length - 1);
-      makeNewCircle();
-    };
+    setRemoveTail(false);
+    setFormDisabled(false);
+  };
 
-    resetInputs();
-  }
 
-  const elementsList = (): number[] => {
-    const elementsArray: number[] = [];
-    let currNode = list?.head;
-    while (currNode !== null && currNode) {
-      elementsArray.push(currNode.value);
-      currNode = currNode.next;
-    }
+  const onRemoveValueByIndex = async () => {
+    setFormDisabled(true);
+    setRemoveByIndex(true);
 
-    return elementsArray
-  }
+    list.deleteByIndex(inputIndex);
 
-  const deleteCircleIndex = () => {
+    const updatedArray = array.map((item, index) => {
+      if (index <= inputIndex) {
+        return {
+          ...item,
+          state: ElementStates.Changing
+        };
+      } else {
+        return item;
+      }
+    });
 
-    const iIndex = Number(inputIndex);
+    setArray(updatedArray);
+    await setDelay(500);
 
-    if (list !== null && (iIndex <= circles.length - 1)) {
+    setArray(prevArray => {
+      const newArray = [...prevArray];
+      newArray[inputIndex] = {
+        ...newArray[inputIndex],
+        value: '',
+        smallCircle: {
+          state: ElementStates.Changing,
+          value: newArray[inputIndex].value,
+          activeClass: "bigCircle"
+        }
+      };
+      return newArray;
+    });
+    await setDelay(500);
 
-      list.deleteAt(iIndex);
+    setArray(prevArray => {
+      const newArray = [...prevArray];
+      newArray.splice(inputIndex, 1);
+      if (inputIndex > 0) {
+        newArray[inputIndex - 1] = {
+          ...newArray[inputIndex - 1],
+          state: ElementStates.Modified,
+          smallCircle: null
+        };
+      }
+      return newArray;
+    });
+    await setDelay(500);
 
-      makeNewCircle();
-    }
-    resetInputs();
-  }
+    setArray(prevArray => {
+      const newArray = prevArray.map(item => ({
+        ...item,
+        state: ElementStates.Default
+      }));
+      return newArray;
+    });
+    await setDelay(500);
+
+    setRemoveByIndex(false);
+    setInputIndex(0);
+    setFormDisabled(false);
+  };
 
 
   return (
-
     <SolutionLayout title="Связный список">
-      <form ref={formRef} className={classNames(styles.inputBlock, style.form)}>
 
-        <div className={style.buttons}>
-          <Input
-            extraClass={classNames(style.input)}
-            onChange={handleInputChange}
-            maxLength={4}
-            isLimitText={true}
-          />
-
-
+      <form className={styles.form}>
+        <Input
+          onChange={onChange}
+          placeholder="Введите значение"
+          isLimitText={true}
+          maxLength={4}
+          value={inputValue}
+          disabled={formDisabled}
+          extraClass={styles.input}
+        />
+        <div className={styles.form_buttons}>
           <Button
-            text={"Добавить в head"}
-            type={"button"}
-            extraClass={style.topBtn }
-            onClick={() => {
-              addCircleHead();
-            }}
+            onClick={onAddHead}
+            text="Добавить в head"
+            isLoader={addHead}
+            extraClass={styles.button_small}
+            disabled={formDisabled || inputValue.length === 0 || array.length >= 9}
           />
-
           <Button
-            text={"Добавить в tail"}
-            type={"button"}
-            extraClass={style.topBtn }
-            onClick={() => {
-              addCircleTail();
-            }}
+            onClick={onAddTail}
+            text="Добавить в tail"
+            extraClass={styles.button_small}
+            isLoader={addTail}
+            disabled={formDisabled || inputValue.length === 0 || array.length >= 9}
           />
-
           <Button
-            text={"Удалить из head"}
-            type={"button"}
-            extraClass={style.topBtn }
-            onClick={() => {
-              deleteCircleHead();
-            }}
+            onClick={onRemoveHead}
+            text="Удалить из head"
+            extraClass={styles.button_small}
+            isLoader={removeHead}
+            disabled={formDisabled || array.length <= 1}
           />
-
           <Button
-            text={"Удалить из tail"}
-            type={"button"}
-            extraClass={style.topBtn }
-            onClick={() => {
-              deleteCircleTail();
-            }}
+            onClick={onRemoveTail}
+            text="Удалить из tail"
+            extraClass={styles.button_small}
+            isLoader={removeTail}
+            disabled={formDisabled || array.length <= 1}
           />
         </div>
-
       </form>
 
-      <form ref={secondFormRef} className={classNames(styles.inputBlock, style.form)}>
-
-        <div className={style.buttons}>
-          <Input
-            extraClass={classNames(style.input)}
-            onChange={handleInputCIndex}
-            maxLength={4}
-            isLimitText={true}
-          />
-
-
+      <form className={styles.form}>
+        <Input
+          onChange={onChangeIndex}
+          isLimitText={false}
+          type="number"
+          maxLength={1}
+          max={array.length - 1}
+          min={0}
+          value={inputIndex}
+          disabled={formDisabled}
+          placeholder="Введите индекс"
+          extraClass={styles.input}
+        />
+        <div className={styles.form_buttons}>
           <Button
-            text={"Добавить по индексу"}
-            type={"button"}
-            extraClass={style.bottomBtn}
-            onClick={() => {
-              addCircleIndex();
-            }}
+            text="Добавить по индексу"
+            extraClass={styles.button_big}
+            onClick={onAddValueByIndex}
+            isLoader={addByIndex}
+            disabled={formDisabled || inputValue.length === 0 || inputIndex > array.length - 1}
           />
-
           <Button
-            text={"Удалить по индексу"}
-            type={"button"}
-            extraClass={style.bottomBtn}
-            onClick={() => {
-              deleteCircleIndex();
-            }}
+            text="Удалить по индексу"
+            extraClass={styles.button_big}
+            onClick={onRemoveValueByIndex}
+            isLoader={removeByIndex}
+            disabled={formDisabled || array.length === 0 || !inputIndex || inputIndex > array.length - 1 || inputIndex < 1}
           />
-
         </div>
-
       </form>
 
-      {circles.length > 0 && (
-        <div className={styles.circleBlock}>
-          {circles}
-        </div>
-      )}
+      <div className={styles.list}>
+        {array.map((item, index) => {
+          const isHead = !item.smallCircle && index === 0;
+          const isTail = !item.smallCircle && index === array.length - 1;
+          const circleExtraClass = item.smallCircle && item.smallCircle.activeClass === 'smallCircle' ? styles.smallCircle : styles.bigCircle;
+
+          return (
+            <div className={styles.item} key={index}>
+              <Circle
+                extraClass={styles.bigCircle}
+                letter={item.value}
+                state={item.state}
+                head={isHead ? "head" : ""}
+                tail={isTail ? "tail" : ""}
+                index={index}
+                isSmall={false}
+              />
+
+              {item.smallCircle && (
+                <Circle
+                  state={item.smallCircle.state}
+                  letter={item.smallCircle.value}
+                  isSmall={true}
+                  extraClass={`${styles.circle} ${circleExtraClass}`}
+                />
+              )}
+
+              {index < array.length - 1 && <ArrowIcon fill="#0032FF" />}
+            </div>
+          );
+        })}
+      </div>
+
+
     </SolutionLayout>
   );
-} 
+};

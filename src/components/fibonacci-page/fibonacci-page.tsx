@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import styles from "../styles.module.css"
 import style from './fibonacci.module.css'
+import { fibArray } from "./utils";
 import { SolutionLayout } from "../ui/solution-layout/solution-layout";
 import { Input } from "../ui/input/input";
 import { Button } from "../ui/button/button";
@@ -8,53 +9,48 @@ import { Circle } from "../ui/circle/circle";
 import { ElementStates } from "../../types/element-states";
 
 export const FibonacciPage: React.FC = () => {
-  const [inputValue, setInputValue] = useState<number>();
+  const [inputValue, setInputValue] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [circles, setCircles] = useState<JSX.Element[]>([]);
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.value === '') {
-      setInputValue(undefined);
-    }
-    const numericValue = parseInt(event.target.value, 10);
-
-    if (!isNaN(numericValue) && numericValue >= 1 && numericValue <= 19) {
-      setInputValue(numericValue);
-    } else event.target.value = ''
+    
+      const numericValue = parseInt(event.target.value, 10);
+      if (!isNaN(numericValue) && numericValue >= 1 && numericValue <= 19) {
+        setInputValue(`${numericValue}`);
+      } else {
+        setInputValue('');
+      }
+    
   };
 
   const handleClick = () => {
-
-
-    function fibArray(n: number): number[] {
-      const result = [];
-      let a = 1, b = 1, temp;
-      for (let i = 0; i <= n; i++) {
-        result.push(a);
-        temp = a + b;
-        a = b;
-        b = temp;
-      }
-      return result;
-    }
-
     if (inputValue) {
-      const fibSequence = fibArray(inputValue);
+      setIsLoading(true); 
+      setCircles([]);
+      
+      const fibSequence = fibArray(Number(inputValue));
+  
       const circleElements = fibSequence.map((element, index) => (
         <Circle extraClass={`${styles.circle}`} key={index} state={ElementStates.Default} letter={`${element}`} index={index} />
       ));
-
-      setCircles(circleElements);
+  
+      const addCirclesWithInterval = (index: number): void => {
+        if (index < circleElements.length - 1) {
+          setTimeout(() => {
+            setCircles(prevState => [...prevState, circleElements[index]]);
+            addCirclesWithInterval(index + 1);
+          }, 500);
+        } else {
+          setIsLoading(false); 
+        }
+      };
+  
+      addCirclesWithInterval(0);
     }
   };
+  
 
-  const showCircles = () => {
-    for (let i = 0; i < circles.length; i++) {
-      setTimeout(() => {
-      }, 500);
-      return circles[i];
-    }
-  };
 
   return (
     <SolutionLayout title="Последовательность Фибоначчи">
@@ -73,11 +69,9 @@ export const FibonacciPage: React.FC = () => {
           text={"Развернуть"}
           type={"button"}
           extraClass={styles.btn}
-          disabled={inputValue === 0}
+          disabled={inputValue === ''}
           isLoader={isLoading}
-          onClick={() => {
-            handleClick();
-          }}
+          onClick={handleClick}
         />
       </form>
 
