@@ -14,6 +14,7 @@
     margin-top: 120px;
     justify-content: center;
     display: flex;
+    flex-wrap: wrap;
 }
 
 .btn {
@@ -23,4 +24,5 @@
 
 .circle {
     margin-right: 16px;
+    margin-bottom: 65px;
 }

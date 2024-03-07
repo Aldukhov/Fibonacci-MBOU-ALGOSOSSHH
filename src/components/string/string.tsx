@@ -15,67 +15,68 @@ export const StringComponent: React.FC = () => {
     setInputValue(event.target.value);
   };
 
+
   const handleClick = async () => {
     let newCircles = inputValue.split('').map((element, index) => (
-      <Circle key={index} state={ElementStates.Default} letter={element} />
+      <Circle key={index} extraClass={`${styles.circle}`}  state={ElementStates.Default} letter={element} />
     ));
 
-      setCircles(newCircles);
+    setCircles(newCircles);
 
     await new Promise(resolve => setTimeout(resolve, 1000));
 
-      if (newCircles.length > 1) {
-        setIsLoading(true); 
+    if (newCircles.length > 1) {
+      setIsLoading(true);
 
-        let l = 0;
-        let r = newCircles.length - 1;
+      let l = 0;
+      let r = newCircles.length - 1;
 
-        while (l < r) {
-          // Создаем новый массив JSX элементов с обновленным состоянием для элементов l и r
-          const updatedCircles = newCircles.map((circle, index) => {
-            if (index === l || index === r) {
-              // Изменяем состояние элементов l и r на Changing до обмена местами
-              return <Circle key={index} state={ElementStates.Changing} letter={circle.props.letter} />;
-            }
-            return circle;
-          });
+      while (l < r) {
+        // Создаем новый массив JSX элементов с обновленным состоянием для элементов l и r
+        const updatedCircles = newCircles.map((circle, index) => {
+          if (index === l || index === r) {
+            // Изменяем состояние элементов l и r на Changing до обмена местами
+            return <Circle key={index} extraClass={`${styles.circle}`} state={ElementStates.Changing} letter={circle.props.letter} />;
+          }
+          return circle;
+        });
 
-            // Обновляем состояние кругов
-            setCircles(updatedCircles);
+        // Обновляем состояние кругов
+        setCircles(updatedCircles);
 
-            await new Promise(resolve => setTimeout(resolve, 1000));
+        await new Promise(resolve => setTimeout(resolve, 1000));
 
-            // Обмениваем местами элементы l и r в массиве кругов
-            const temp = updatedCircles[l];
-            updatedCircles[l] = updatedCircles[r];
-            updatedCircles[r] = temp;
+        // Обмениваем местами элементы l и r в массиве кругов
+        const temp = updatedCircles[l];
+        updatedCircles[l] = updatedCircles[r];
+        updatedCircles[r] = temp;
 
-            // Создаем новый массив JSX элементов с обновленным состоянием для элементов l и r
-            const modifiedCircles = updatedCircles.map((circle, index) => {
-              if (index === l || index === r) {
-                // Изменяем состояние элементов l и r на Modified после обмена местами
-                return <Circle key={index} state={ElementStates.Modified} letter={circle.props.letter} />;
-              }
-              return circle;
-            });
+        // Создаем новый массив JSX элементов с обновленным состоянием для элементов l и r
+        const modifiedCircles = updatedCircles.map((circle, index) => {
+          if (index === l || index === r) {
+            // Изменяем состояние элементов l и r на Modified после обмена местами
+            return <Circle extraClass={`${styles.circle}`}  key={index} state={ElementStates.Modified} letter={circle.props.letter} />;
+          }
+          return circle;
+        });
 
-            newCircles = modifiedCircles;
-            // Обновляем состояние кругов после обмена местами
-            setCircles(modifiedCircles);
+        newCircles = modifiedCircles;
+        // Обновляем состояние кругов после обмена местами
+        setCircles(modifiedCircles);
 
-            l++;
-            r--;
-        }
-
-
-        setIsLoading(false);
+        l++;
+        r--;
       }
+
+
+      setIsLoading(false);
+    }
   };
 
   return (
     <SolutionLayout title="Строка">
       <form className={styles.inputBlock}>
-        <Input
+      <Input
           extraClass={styles.inputMargin}
           maxLength={11}
           isLimitText={true}
@@ -90,6 +91,7 @@ export const StringComponent: React.FC = () => {
           onClick={() => {
             handleClick();
           }}
+          extraClass={styles.btn}
         />
       </form>
 
