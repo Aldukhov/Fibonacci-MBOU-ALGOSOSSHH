@@ -1,0 +1,29 @@
+{
+  "files": {
+    "main.css": "/Fibonacci-MBOU-ALGOSOSSHH/static/css/main.41482433.css",
+    "main.js": "/Fibonacci-MBOU-ALGOSOSSHH/static/js/main.031e15db.js",
+    "static/js/787.5f9dd8bb.chunk.js": "/Fibonacci-MBOU-ALGOSOSSHH/static/js/787.5f9dd8bb.chunk.js",
+    "static/media/bg.jpg": "/Fibonacci-MBOU-ALGOSOSSHH/static/media/bg.971318c52485d1963a30.jpg",
+    "static/media/arr-hover.svg": "/Fibonacci-MBOU-ALGOSOSSHH/static/media/arr-hover.a52854e0c00e33cd4d38.svg",
+    "static/media/arr.svg": "/Fibonacci-MBOU-ALGOSOSSHH/static/media/arr.a1b9db493901c7af7652.svg",
+    "static/media/fibonacci-hover.svg": "/Fibonacci-MBOU-ALGOSOSSHH/static/media/fibonacci-hover.0c33a178af84d4f53cef.svg",
+    "static/media/fibonacci.svg": "/Fibonacci-MBOU-ALGOSOSSHH/static/media/fibonacci.7b6125fb7e8909f16ee0.svg",
+    "static/media/list-hover.svg": "/Fibonacci-MBOU-ALGOSOSSHH/static/media/list-hover.840c1f5ef69bb5541f5d.svg",
+    "static/media/list.svg": "/Fibonacci-MBOU-ALGOSOSSHH/static/media/list.d4fa2d9f0b3934eb26bd.svg",
+    "static/media/queue-hover.svg": "/Fibonacci-MBOU-ALGOSOSSHH/static/media/queue-hover.d1256b924ff9d8b9b243.svg",
+    "static/media/queue.svg": "/Fibonacci-MBOU-ALGOSOSSHH/static/media/queue.cbfa79052a8dc0c47071.svg",
+    "static/media/stack-hover.svg": "/Fibonacci-MBOU-ALGOSOSSHH/static/media/stack-hover.00b180b24bba43588954.svg",
+    "static/media/stack.svg": "/Fibonacci-MBOU-ALGOSOSSHH/static/media/stack.b55a8e80cb39e847aab9.svg",
+    "static/media/string-hover.svg": "/Fibonacci-MBOU-ALGOSOSSHH/static/media/string-hover.5f4edc84a0ed873770ca.svg",
+    "static/media/string.svg": "/Fibonacci-MBOU-ALGOSOSSHH/static/media/string.20f90662771c227e1bca.svg",
+    "index.html": "/Fibonacci-MBOU-ALGOSOSSHH/index.html",
+    "static/media/loader.svg": "/Fibonacci-MBOU-ALGOSOSSHH/static/media/loader.b935a8aeb021da7b2a90191a58ea95f4.svg",
+    "main.41482433.css.map": "/Fibonacci-MBOU-ALGOSOSSHH/static/css/main.41482433.css.map",
+    "main.031e15db.js.map": "/Fibonacci-MBOU-ALGOSOSSHH/static/js/main.031e15db.js.map",
+    "787.5f9dd8bb.chunk.js.map": "/Fibonacci-MBOU-ALGOSOSSHH/static/js/787.5f9dd8bb.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.41482433.css",
+    "static/js/main.031e15db.js"
+  ]
+}
