@@ -1,0 +1,42 @@
+.form {
+    align-items: center;
+
+}
+
+.buttons {
+    margin-left: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 80px;
+}
+
+.buttonM {
+    margin-right: 12px;
+}
+
+
+.mr {
+    margin-right: 40px;
+}
+
+.btns {
+    max-width:205px;
+    width:100%;
+}
+.column {
+    width:50px;
+    margin-bottom: 6px;
+}
+
+.container {
+    margin-top: 48px;
+    display: flex;
+    justify-content: center;
+  align-items: flex-end;
+}
+
+.containerBlock {
+    display:block;
+    margin-right: 10px;
+}
