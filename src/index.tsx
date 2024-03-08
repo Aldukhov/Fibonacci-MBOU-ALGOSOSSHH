@@ -4,6 +4,7 @@ import "./index.css";
 import "./fonts/fonts.css";
 import "./components/ui/common.css";
 import "./components/ui/box.css";
+import { BrowserRouter } from 'react-router-dom';
 import App from "./components/app/app";
 import reportWebVitals from "./reportWebVitals";
 
