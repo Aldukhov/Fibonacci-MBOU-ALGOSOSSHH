@@ -6,7 +6,7 @@ import { Button } from "../ui/button/button";
 import { Input } from "../ui/input/input";
 import { Circle } from "../ui/circle/circle";
 import { ElementStates } from "../../types/element-states";
-import classNames from 'classnames';
+import classNames from 'classnames'
 import { IQueue, Queue } from "./utils";
 
 export const QueuePage: React.FC = () => {
