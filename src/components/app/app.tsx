@@ -36,6 +36,9 @@ function App() {
           <Route path="/list">
             <ListPage />
           </Route>
+          <Route>
+          <MainPage />
+          </Route>
         </Switch>
       </BrowserRouter>
     </div>
