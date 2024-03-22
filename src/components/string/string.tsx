@@ -18,7 +18,7 @@ export const StringComponent: React.FC = () => {
 
   const handleClick = async () => {
     let newCircles = inputValue.split('').map((element, index) => (
-      <Circle key={index} extraClass={`${styles.circle}`}  state={ElementStates.Default} letter={element} />
+      <Circle key={index} extraClass={styles.circle}  state={ElementStates.Default} letter={element}/>
     ));
 
     setCircles(newCircles);
@@ -82,6 +82,7 @@ export const StringComponent: React.FC = () => {
           isLimitText={true}
           onChange={handleInputChange}
           value={inputValue}
+          data-testid='input'
         />
         <Button
           text={"Развернуть"}
@@ -91,7 +92,8 @@ export const StringComponent: React.FC = () => {
           onClick={() => {
             handleClick();
           }}
-          extraClass={styles.btn}
+          extraClass={`${styles.btn} ${isLoading ? styles.isLoader : styles.notLoader}`}
+          data-testid='btn'
         />
       </form>
 
