@@ -196,9 +196,10 @@ export const ListPage: React.FC = () => {
             value: inputValue,
             activeClass: "smallCircle"
           }
+         
         };
 
-        await setDelay(500);
+        await setDelay(1000);
         setArray([...updatedArray]);
 
         if (i > 0) {
@@ -406,6 +407,7 @@ export const ListPage: React.FC = () => {
           value={inputValue}
           disabled={formDisabled}
           extraClass={styles.input}
+          data-testid='input'
         />
         <div className={styles.form_buttons}>
           <Button
@@ -439,7 +441,7 @@ export const ListPage: React.FC = () => {
         </div>
       </form>
 
-      <form className={styles.form}>
+      <form className={styles.form} data-testid="secondForm">
         <Input
           onChange={onChangeIndex}
           isLimitText={false}
@@ -451,6 +453,7 @@ export const ListPage: React.FC = () => {
           disabled={formDisabled}
           placeholder="Введите индекс"
           extraClass={styles.input}
+          data-testid='inputIndex'
         />
         <div className={styles.form_buttons}>
           <Button

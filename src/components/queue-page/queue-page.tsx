@@ -11,7 +11,7 @@ import { IQueue, Queue } from "./utils";
 
 export const QueuePage: React.FC = () => {
 
-  const [disableDelete, setDisableDelete] = useState<boolean>(false);
+  const [disableDelete, setDisableDelete] = useState<boolean>(true);
   const [disableClean, setDisableClean] = useState<boolean>(true);
   const [circles, setCircles] = useState<JSX.Element[]>([]);
   const [inputValue, setInputValue] = useState<string>('');
@@ -63,7 +63,6 @@ export const QueuePage: React.FC = () => {
   const addCircle = () => {
     if (inputValue !== '' && queue !== null && !isNaN(Number(inputValue))) {
       queue.enqueue(Number(inputValue));
-
       setCircles(prevState => {
         const newArr = [...prevState];
         const arr = newArr.map((element, index) => {
@@ -100,6 +99,7 @@ export const QueuePage: React.FC = () => {
 
     setInputValue('');
     setDisableClean(false);
+    setDisableDelete(false);
     if (formRef.current) {
       formRef.current.reset();
     }
@@ -150,7 +150,7 @@ export const QueuePage: React.FC = () => {
       }, 500);
 
     } else {
-      setDisableDelete(false);
+      setDisableDelete(true);
     };
 
   }
@@ -175,6 +175,7 @@ export const QueuePage: React.FC = () => {
             onChange={handleInputChange}
             maxLength={4}
             isLimitText={true}
+            data-testid='input' 
           />
 
 
@@ -185,6 +186,7 @@ export const QueuePage: React.FC = () => {
             onClick={() => {
               addCircle();
             }}
+            disabled={inputValue === ''}
           />
 
           <Button

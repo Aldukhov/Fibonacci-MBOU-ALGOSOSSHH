@@ -5,6 +5,7 @@ import { Button } from "../ui/button/button";
 import { Circle } from "../ui/circle/circle";
 import { ElementStates } from "../../types/element-states";
 import styles from './string.module.css';
+import { reverseArray } from "./utils";
 
 export const StringComponent: React.FC = () => {
   const [inputValue, setInputValue] = useState<string>('');
@@ -17,6 +18,7 @@ export const StringComponent: React.FC = () => {
 
 
   const handleClick = async () => {
+
     let newCircles = inputValue.split('').map((element, index) => (
       <Circle key={index} extraClass={styles.circle}  state={ElementStates.Default} letter={element}/>
     ));
@@ -48,8 +50,8 @@ export const StringComponent: React.FC = () => {
 
         // Обмениваем местами элементы l и r в массиве кругов
         const temp = updatedCircles[l];
-        updatedCircles[l] = updatedCircles[r];
-        updatedCircles[r] = temp;
+        
+        reverseArray(updatedCircles, l, r, temp);
 
         // Создаем новый массив JSX элементов с обновленным состоянием для элементов l и r
         const modifiedCircles = updatedCircles.map((circle, index) => {

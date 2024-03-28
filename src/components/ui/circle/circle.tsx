@@ -11,7 +11,6 @@ interface CircleProps {
   tailType?: "string" | "element";
   extraClass?: string;
   isSmall?: boolean;
-  testId?: string;
 }
 
 export const Circle: React.FC<CircleProps> = ({
@@ -22,7 +21,6 @@ export const Circle: React.FC<CircleProps> = ({
   tail,
   extraClass = "",
   isSmall,
-  testId
 }) => {
   return (
     <div data-testid = 'circle' className={`${styles.content} ${extraClass}`}>

@@ -113,6 +113,7 @@ export const StackPage: React.FC = () => {
             onChange={handleInputChange}
             maxLength={4}
             isLimitText={true}
+            data-testid='input' 
           />
 
 
@@ -120,7 +121,7 @@ export const StackPage: React.FC = () => {
             text={"Добавить"}
             type={"button"}
             extraClass={style.mr}
-            disabled={circles.length === 6 || isDisable}
+            disabled={circles.length === 6 || isDisable || inputValue === ''}
             onClick={() => {
               addCircle();
             }}
