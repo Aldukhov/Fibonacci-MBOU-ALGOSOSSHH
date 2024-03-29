@@ -12,6 +12,8 @@ const pElement = getByTestId('letter');
     expect(pElement).toBeInTheDocument();
 
     expect(pElement.textContent).toBe('a');
+
+    expect(pElement).toMatchSnapshot();
 })
 
 test('Circle without text', () => {
@@ -22,6 +24,7 @@ test('Circle without text', () => {
     expect(pElement).toBeInTheDocument();
 
     expect(pElement.textContent).toBe('');
+    expect(pElement).toMatchSnapshot();
 })
 
 test('Circle with head', () => {
@@ -32,6 +35,7 @@ test('Circle with head', () => {
     expect(head).toBeInTheDocument();
 
     expect(head).toHaveTextContent('1');
+    expect(head).toMatchSnapshot();
 })
 
 
@@ -46,6 +50,8 @@ test('Circle with React element head', () => {
     if (React.isValidElement(head)) {
         expect(React.isValidElement(head.props.children)).toBeTruthy();
     }
+
+    expect(head).toMatchSnapshot();
 })
 
 test('Circle with tail', () => {
@@ -56,6 +62,7 @@ test('Circle with tail', () => {
     expect(tail).toBeInTheDocument();
 
     expect(tail).toHaveTextContent('1');
+    expect(tail).toMatchSnapshot();
 })
 
 
@@ -70,6 +77,8 @@ test('Circle with React element tail', () => {
     if (React.isValidElement(tail)) {
         expect(React.isValidElement(tail.props.children)).toBeTruthy();
     }
+
+    expect(tail).toMatchSnapshot();
 })
 
 
@@ -82,6 +91,7 @@ test('Circle with index', () => {
     expect(index).toBeInTheDocument();
 
     expect(index).toHaveTextContent('5');
+    expect(index).toMatchSnapshot();
 })
 
 test('Circle with isSmall', () => {
@@ -93,6 +103,8 @@ test('Circle with isSmall', () => {
     expect(isSmall).toBeInTheDocument();
 
     expect(isSmall).toHaveClass('small');
+
+    expect(isSmall).toMatchSnapshot();
 })
 
 test('Circle with state default', () => {
@@ -104,6 +116,7 @@ test('Circle with state default', () => {
     expect(isSmall).toBeInTheDocument();
 
     expect(isSmall).toHaveClass('default');
+    expect(isSmall).toMatchSnapshot();
 })
 
 test('Circle with state changing', () => {
@@ -115,6 +128,7 @@ test('Circle with state changing', () => {
     expect(isSmall).toBeInTheDocument();
 
     expect(isSmall).toHaveClass('changing');
+    expect(isSmall).toMatchSnapshot();
 })
 
 test('Circle with state modified', () => {
@@ -126,4 +140,5 @@ test('Circle with state modified', () => {
     expect(isSmall).toBeInTheDocument();
 
     expect(isSmall).toHaveClass('modified');
+    expect(isSmall).toMatchSnapshot();
 })

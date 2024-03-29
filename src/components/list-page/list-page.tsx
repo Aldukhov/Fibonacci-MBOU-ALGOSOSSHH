@@ -337,19 +337,20 @@ export const ListPage: React.FC = () => {
 
     list.deleteByIndex(inputIndex);
 
-    const updatedArray = array.map((item, index) => {
-      if (index <= inputIndex) {
-        return {
-          ...item,
-          state: ElementStates.Changing
-        };
-      } else {
-        return item;
+    const updatedArray = array;
+
+    for (let i = 0; i <= inputIndex; i++) {
+      updatedArray[i] = {
+        ...updatedArray[i],
+        state: ElementStates.Changing,
       }
-    });
+      await setDelay(1000);
+      setArray([...updatedArray]);
+    }
+    
 
     setArray(updatedArray);
-    await setDelay(500);
+    await setDelay(1000);
 
     setArray(prevArray => {
       const newArray = [...prevArray];
@@ -359,12 +360,12 @@ export const ListPage: React.FC = () => {
         smallCircle: {
           state: ElementStates.Changing,
           value: newArray[inputIndex].value,
-          activeClass: "bigCircle"
+          activeClass: "smallCircle"
         }
       };
       return newArray;
     });
-    await setDelay(500);
+    await setDelay(1000);
 
     setArray(prevArray => {
       const newArray = [...prevArray];
@@ -378,7 +379,7 @@ export const ListPage: React.FC = () => {
       }
       return newArray;
     });
-    await setDelay(500);
+    await setDelay(2000);
 
     setArray(prevArray => {
       const newArray = prevArray.map(item => ({

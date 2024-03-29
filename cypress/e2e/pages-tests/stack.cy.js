@@ -1,5 +1,5 @@
 import '@testing-library/cypress/add-commands';
-import { appUrl } from '../../../src/constants/constants'
+import { appUrl, btn, btnId, chanding, circleId, defaultC, form, input, inputId, isSmallId } from '../../../src/constants/constants'
 
 
 describe('stack works correctly', function () {
@@ -7,9 +7,9 @@ describe('stack works correctly', function () {
     it('empty input', function () {
         cy.visit(`${appUrl}/stack`);
         cy.get('form').first().as('form');
-        cy.get('@form').find('[data-testid="input"]').as('input');
-        cy.get('@form').find('[data-testid="btn"]').as('btn');
-        cy.get('@btn').should('be.disabled');
+        cy.get(form).find(inputId).as('input');
+        cy.get(form).find(btnId).as('btn');
+        cy.get(btn).should('be.disabled');
 
     });
 
@@ -17,27 +17,27 @@ describe('stack works correctly', function () {
     it('the fib numbers generate correctly', function () {
         cy.visit(`${appUrl}/stack`);
         cy.get('form').first().as('form');
-        cy.get('@form').find('[data-testid="input"]').as('input');
-        cy.get('@form').find('[data-testid="btn"]').as('btn');
+        cy.get(form).find(inputId).as('input');
+        cy.get(form).find(btnId).as('btn');
     
         const numbersToAdd = ['5', '3', '1'];
     
         numbersToAdd.forEach(number => {
-            cy.get('@input').clear().type(number);
-            cy.get('@btn').contains('Добавить').click();
+            cy.get(input).clear().type(number);
+            cy.get(btn).contains('Добавить').click();
     
-            cy.get('[data-testid="circle"]').last().find('[data-testid="isSmall"]').should('have.css', 'border', '4px solid rgb(210, 82, 225)');
+            cy.get(circleId).last().find(isSmallId).should('have.css', 'border', `4px solid ${chanding}`);
             cy.wait(500);
-            cy.get('[data-testid="circle"]').last().find('[data-testid="isSmall"]').should('have.css', 'border', '4px solid rgb(0, 50, 255)');
+            cy.get(circleId).last().find(isSmallId).should('have.css', 'border', `4px solid ${defaultC}`);
         });
     
-        const container = cy.get('[data-testid="circle"]');
+        const container = cy.get(circleId);
         
         container.then(($elementsBeforeDelete) => {
             const countBeforeDelete = $elementsBeforeDelete.length;
-            cy.get('@btn').contains('Удалить').click();
+            cy.get(btn).contains('Удалить').click();
     
-            cy.get('[data-testid="circle"]').last().find('[data-testid="isSmall"]').should('have.css', 'border', '4px solid rgb(210, 82, 225)');
+            cy.get(circleId).last().find(isSmallId).should('have.css', 'border', '4px solid rgb(210, 82, 225)');
     
             container.then(($elementsAfterDelete) => {
                 const countAfterDelete = $elementsAfterDelete.length;
@@ -45,8 +45,8 @@ describe('stack works correctly', function () {
             });
         });
     
-        cy.get('@btn').contains('Очистить').click().then(() => {
-            cy.get('[data-testid="circle"]').should('not.exist');
+        cy.get(btn).contains('Очистить').click().then(() => {
+            cy.get(circleId).should('not.exist');
         });
     });
     
