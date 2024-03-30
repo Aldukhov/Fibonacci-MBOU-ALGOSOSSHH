@@ -3,7 +3,7 @@ import {
     appUrl, form, inputId,
     secondForm, btn, btnId,
     inputIndexId, circleId, circles,
-    input,smallCircleClass, isSmallId, headId, tailId, letterId, modified, defaultC, inputIndex, chanding
+    input,smallCircleClass, isSmallId, headId, tailId, letterId, modified, defaultC, inputIndex, chanding, bigCircleClass
 } from '../../../src/constants/constants'
 
 
@@ -115,10 +115,9 @@ describe('stack works correctly', function () {
             cy.get(smallCircleClass).should('exist');
 
             for (let k = 0; k <= index; k++) {
-                cy.get('.list_bigCircle__mpUsa').then((circle) => {
+                cy.get(bigCircleClass).then((circle) => {
                     cy.wrap(circle)
                         .eq(k)
-                        .find(isSmallId)
                         .should('have.css', 'border-color', chanding)
                 })
 
@@ -187,11 +186,10 @@ describe('stack works correctly', function () {
             cy.get(btn).contains('Удалить по индексу').click()
 
             for (let k = 0; k <= index; k++) {
-                cy.get('.list_bigCircle__mpUsa').then((circle) => {
+                cy.get(bigCircleClass).then((circle) => {
                     cy.tick(1000);
                     cy.wrap(circle)
-                        .eq(k)
-                        .find(isSmallId)
+                        .eq(k)                        
                         .should('have.css', 'border-color', chanding)
                 })
             }
@@ -200,23 +198,21 @@ describe('stack works correctly', function () {
 
             cy.get(smallCircleClass).should('exist');
 
-            cy.get(smallCircleClass).find(isSmallId)
+            cy.get(smallCircleClass)
                 .should('have.text', deletedElement[0])
                 .should('have.css', 'border-color', chanding)
 
-            cy.get('.list_bigCircle__mpUsa').then((circle) => {
+            cy.get(bigCircleClass).then((circle) => {
                 cy.wrap(circle)
                     .eq(index)
-                    .find(isSmallId)
                     .should('have.text', '')
             })
 
             cy.tick(1000);
 
-            cy.get('.list_bigCircle__mpUsa').then((circle) => {
+            cy.get(bigCircleClass).then((circle) => {
                 cy.wrap(circle)
                     .eq(index - 1)
-                    .find(isSmallId)
                     .should('have.css', 'border-color', modified)
             })
 

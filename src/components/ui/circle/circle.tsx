@@ -35,6 +35,7 @@ export const Circle: React.FC<CircleProps> = ({
       </div>
       <div
         data-testid = 'isSmall'
+        secondData-testid = {isSmall ? 'isSmallTrue' : 'isBig'}
         className={`${styles.circle}  ${isSmall ? styles.small : ""} ${
           styles[state]
         }`}

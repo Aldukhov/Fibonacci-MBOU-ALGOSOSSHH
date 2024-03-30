@@ -17,7 +17,8 @@ export const input = '@input';
 
 export const circleId = '[data-testid="circle"]';
 export const circles = '@circles';
-export const smallCircleClass = '.list_smallCircle__UOhVu';
+export const smallCircleClass = '[secondData-testid = "isSmallTrue"]';
+export const bigCircleClass = '[secondData-testid = "isBig"]';
 
 export const isSmallId = '[data-testid="isSmall"]';
 export const headId ='[data-testid="head"]';
