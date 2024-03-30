@@ -196,9 +196,10 @@ export const ListPage: React.FC = () => {
             value: inputValue,
             activeClass: "smallCircle"
           }
+         
         };
 
-        await setDelay(500);
+        await setDelay(1000);
         setArray([...updatedArray]);
 
         if (i > 0) {
@@ -336,19 +337,19 @@ export const ListPage: React.FC = () => {
 
     list.deleteByIndex(inputIndex);
 
-    const updatedArray = array.map((item, index) => {
-      if (index <= inputIndex) {
-        return {
-          ...item,
-          state: ElementStates.Changing
-        };
-      } else {
-        return item;
+    const updatedArray = array;
+
+    for (let i = 0; i <= inputIndex; i++) {
+      updatedArray[i] = {
+        ...updatedArray[i],
+        state: ElementStates.Changing,
       }
-    });
+      setArray([...updatedArray]);
+      await setDelay(500);
+    }
+    
 
     setArray(updatedArray);
-    await setDelay(500);
 
     setArray(prevArray => {
       const newArray = [...prevArray];
@@ -358,7 +359,7 @@ export const ListPage: React.FC = () => {
         smallCircle: {
           state: ElementStates.Changing,
           value: newArray[inputIndex].value,
-          activeClass: "bigCircle"
+          activeClass: "smallCircle"
         }
       };
       return newArray;
@@ -386,6 +387,7 @@ export const ListPage: React.FC = () => {
       }));
       return newArray;
     });
+
     await setDelay(500);
 
     setRemoveByIndex(false);
@@ -406,6 +408,7 @@ export const ListPage: React.FC = () => {
           value={inputValue}
           disabled={formDisabled}
           extraClass={styles.input}
+          data-testid='input'
         />
         <div className={styles.form_buttons}>
           <Button
@@ -439,7 +442,7 @@ export const ListPage: React.FC = () => {
         </div>
       </form>
 
-      <form className={styles.form}>
+      <form className={styles.form} data-testid="secondForm">
         <Input
           onChange={onChangeIndex}
           isLimitText={false}
@@ -451,6 +454,7 @@ export const ListPage: React.FC = () => {
           disabled={formDisabled}
           placeholder="Введите индекс"
           extraClass={styles.input}
+          data-testid='inputIndex'
         />
         <div className={styles.form_buttons}>
           <Button

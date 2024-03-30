@@ -64,6 +64,7 @@ export const FibonacciPage: React.FC = () => {
           onChange={handleInputChange}
           value={inputValue}
           max={19}
+          data-testid='input'
         />
         <Button
           text={"Развернуть"}
@@ -72,6 +73,7 @@ export const FibonacciPage: React.FC = () => {
           disabled={inputValue === ''}
           isLoader={isLoading}
           onClick={handleClick}
+          data-testid='btn'
         />
       </form>
 

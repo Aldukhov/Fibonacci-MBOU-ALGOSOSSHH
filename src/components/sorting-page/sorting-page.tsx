@@ -5,6 +5,7 @@ import style from './sorting.module.css'
 import { SolutionLayout } from "../ui/solution-layout/solution-layout";
 import { Button } from "../ui/button/button";
 import { RadioInput } from "../ui/radio-input/radio-input";
+import { bubbleFunc, selectionFunc } from "./utils";
 
 export const SortingPage: React.FC = () => {
   const [arr, setArr] = useState<number[]>([]);
@@ -62,34 +63,8 @@ export const SortingPage: React.FC = () => {
       let sortedArr = [...arr];
       let sortedColors = [...columnColors];
 
-      for (let i = 0; i < sortedArr.length - 1; i++) {
+      await bubbleFunc(sortedArr,ascending,sortedColors,delay,setColumnColors,setArr);
 
-        for (let j = 0; j < sortedArr.length - i - 1; j++) {
-          sortedColors[j] = '#D252E1';
-          sortedColors[j + 1] = '#D252E1';
-          setColumnColors([...sortedColors]);
-          await delay(500);
-
-          if (!ascending ? sortedArr[j] > sortedArr[j + 1] : sortedArr[j] < sortedArr[j + 1]) {
-            const temp = sortedArr[j];
-            sortedArr[j] = sortedArr[j + 1];
-            sortedArr[j + 1] = temp;
-
-            setArr([...sortedArr]);
-            sortedColors[j] = '#7FE051';
-            sortedColors[j + 1] = '#7FE051';
-            setColumnColors([...sortedColors]);
-            await delay(500);
-
-          } else {
-
-            sortedColors[j] = '#7FE051';
-            sortedColors[j + 1] = '#7FE051';
-            setColumnColors([...sortedColors]);
-            await delay(500);
-          }
-        }
-      }
       setIsLoading(false);
     }
   }
@@ -99,26 +74,7 @@ export const SortingPage: React.FC = () => {
       let sortedArr = [...arr];
       let sortedColors = [...columnColors];
 
-      for (let i = 0; i < sortedArr.length - 1; i++) {
-        let minIndex = i;
-
-        for (let j = i + 1; j < sortedArr.length; j++) {
-          sortedColors[j] = '#D252E1';
-          setColumnColors([...sortedColors]);
-          await delay(500);
-          if (!ascending ? sortedArr[j] < sortedArr[minIndex] : sortedArr[j] > sortedArr[minIndex]) {
-            minIndex = j;
-          }
-        }
-
-        const temp = sortedArr[i];
-        sortedArr[i] = sortedArr[minIndex];
-        sortedArr[minIndex] = temp;
-        setArr([...sortedArr]);
-        sortedColors[i] = '#7FE051';
-        sortedColors[minIndex] = '#7FE051';
-        setColumnColors([...sortedColors]);
-      }
+      await selectionFunc(sortedArr,ascending,sortedColors,delay,setColumnColors,setArr);
 
       if (sortedColors[sortedColors.length - 1] !== '#7FE051') {
         sortedColors[sortedColors.length - 1] = '#7FE051';
