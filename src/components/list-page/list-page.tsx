@@ -344,13 +344,12 @@ export const ListPage: React.FC = () => {
         ...updatedArray[i],
         state: ElementStates.Changing,
       }
-      await setDelay(1000);
       setArray([...updatedArray]);
+      await setDelay(500);
     }
     
 
     setArray(updatedArray);
-    await setDelay(1000);
 
     setArray(prevArray => {
       const newArray = [...prevArray];
@@ -365,7 +364,7 @@ export const ListPage: React.FC = () => {
       };
       return newArray;
     });
-    await setDelay(1000);
+    await setDelay(500);
 
     setArray(prevArray => {
       const newArray = [...prevArray];
@@ -379,7 +378,7 @@ export const ListPage: React.FC = () => {
       }
       return newArray;
     });
-    await setDelay(2000);
+    await setDelay(500);
 
     setArray(prevArray => {
       const newArray = prevArray.map(item => ({
@@ -388,6 +387,7 @@ export const ListPage: React.FC = () => {
       }));
       return newArray;
     });
+
     await setDelay(500);
 
     setRemoveByIndex(false);

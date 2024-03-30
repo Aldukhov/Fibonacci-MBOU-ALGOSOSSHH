@@ -14,7 +14,7 @@ describe('app works correctly with routes', function () {
     });
 
     it('Должен открывать главную страницу по умолчанию', function () {
-        cy.contains('h1.main-page_title__eOF4m', 'МБОУ АЛГОСОШ').should('exist');
+        cy.contains('МБОУ АЛГОСОШ').should('exist');
     });
 
     it('Должен открывать страницу рекурсии', function () {

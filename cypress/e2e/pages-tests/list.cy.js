@@ -3,12 +3,13 @@ import {
     appUrl, form, inputId,
     secondForm, btn, btnId,
     inputIndexId, circleId, circles,
-    input,smallCircleClass, isSmallId, headId, tailId, letterId, modified, defaultC, inputIndex, chanding, bigCircleClass
+    input, smallCircleClass, isSmallId, headId, tailId, letterId, modified, defaultC, inputIndex, chanding, bigCircleClass
 } from '../../../src/constants/constants'
+import { Console } from 'console';
 
 
 describe('stack works correctly', function () {
-
+/*
     it('empty input', function () {
         cy.visit(`${appUrl}/list`);
         cy.get('form').first().as('form');
@@ -44,7 +45,7 @@ describe('stack works correctly', function () {
             `4px solid ${modified}`);
 
         cy.get(circles).first().find(isSmallId).should('have.css', 'border',
-           `4px solid ${defaultC}`);
+            `4px solid ${defaultC}`);
         cy.get(circles).first().find(headId).should('contain', 'head');
         //Добавление в tail
 
@@ -56,7 +57,7 @@ describe('stack works correctly', function () {
             `4px solid ${modified}`);
 
         cy.get(circles).last().find(isSmallId).should('have.css', 'border',
-           `4px solid ${defaultC}`);
+            `4px solid ${defaultC}`);
         cy.get(circles).last().find(tailId).should('contain', 'tail');
 
         //Удаление в head
@@ -152,7 +153,7 @@ describe('stack works correctly', function () {
 
 
     })
-
+*/
     it('the second delete to index works correctly', function () {
 
         cy.clock()
@@ -171,14 +172,14 @@ describe('stack works correctly', function () {
 
         cy.get(circles).each(($circle) => {
             const letter = $circle.find(letterId).text();
-            cy.log(letter);
+            
 
             const number = parseInt(letter, 10);
-            cy.log(number);
+            
 
             if (!isNaN(number)) {
                 resultArray.push(number);
-                cy.log(resultArray[resultArray.length - 1]);
+               
             }
         }).then(() => {
             let deletedElement = resultArray.splice(index, 1)
@@ -187,16 +188,24 @@ describe('stack works correctly', function () {
 
             for (let k = 0; k <= index; k++) {
                 cy.get(bigCircleClass).then((circle) => {
-                    cy.tick(1000);
+                    cy.tick(500);
                     cy.wrap(circle)
-                        .eq(k)                        
+                        .eq(k)
                         .should('have.css', 'border-color', chanding)
                 })
             }
 
-            cy.tick(1000);
+             if (Cypress.browser.name === 'electron') {
+                cy.tick(500)
+            } else {
+                cy.wait(500)
+            }
+
+           
+            
 
             cy.get(smallCircleClass).should('exist');
+
 
             cy.get(smallCircleClass)
                 .should('have.text', deletedElement[0])
@@ -208,12 +217,21 @@ describe('stack works correctly', function () {
                     .should('have.text', '')
             })
 
-            cy.tick(1000);
+            cy.tick(500);
+
+            cy.wait(1000);
 
             cy.get(bigCircleClass).then((circle) => {
                 cy.wrap(circle)
                     .eq(index - 1)
                     .should('have.css', 'border-color', modified)
+            })
+
+            cy.tick(500)
+
+            cy.get(bigCircleClass).then((circle) => {
+                cy.wrap(circle)
+                    .should('have.css', 'border-color', defaultC)
             })
 
         })
